@@ -72,16 +72,12 @@ function getDataPoints(maxBlockHeight, step) {
             x: expectedMinedDate,
             y: supplyOfBlock,
             label: label + " Block height: " + blockHeight,
-            color: color,
-            lineColor: color,
         });
 
         blockRewardDataPoints.push({
             x: expectedMinedDate,
             y: baseRewardOfBlockWithoutUpdate,
             label: label,
-            color: color,
-            lineColor: color,
         });
     }
     return [totalSupplyDataPoints, blockRewardDataPoints];
@@ -152,7 +148,7 @@ function setupCharts() {
                     dataPoints: dataPoints[1]
                 },
                 {
-                    type: "line",
+                    type: "stepLine",
                     dataPoints: bitcoinDataPoints[1]
                 },
             ]

@@ -8,8 +8,17 @@
 </head>
 <body>
 <style>
-    body {
+    .chart-container {
+        height:50vh;
+        width:90vw;
+        margin-left: 5vw;
+        margin-right: 5vw;
+        margin-bottom: 44px;
+    }
 
+    .chart {
+        width: 100%;
+        height: 100%;
     }
 </style>
 <header>
@@ -28,14 +37,14 @@
 <h2>
     Total supply over time
 </h2>
-<div class="chart-container" style="position: relative; height:50vh; width:90vw; margin-bottom: 5vw; margin-left: 5vw; margin-right: 5vw">
-    <div id="chart-total-supply"></div>
+<div class="chart-container">
+    <div id="chart-total-supply" class="chart"></div>
 </div>
 <h2>
     Block reward over time
 </h2>
-<div class="chart-container" style="position: relative; height:50vh; width:90vw; margin-bottom: 5vw; margin-left: 5vw; margin-right: 5vw">
-    <div id="chart-block-reward"></div>
+<div class="chart-container">
+    <div id="chart-block-reward" class="chart"></div>
 </div>
 </body>
 </html>

@@ -1,0 +1,23 @@
+body {
+    background-color: white;
+    font-family: "Open Sans", sans-serif;
+}
+
+header {
+    display: flex;
+    justify-content: center;
+    color: white;
+}
+
+h1 {
+    color: rgb(76, 76, 76);
+    text-transform: uppercase;
+    font-family: Hind, "Open Sans", sans-serif;
+    font-size: 3rem;
+    font-weight: 700;
+}
+
+#chart-outer {
+    display: flex;
+    justify-content: center;
+}

@@ -2,9 +2,9 @@ const maxSupply = (Math.pow(2, 64) - 1) * Math.pow(10, -12); // Max supply is 2^
 const tailEmission = 0.6;
 const hydrogenHelixActivationHeight = 1009827;
 
-function getBaseRewardForBlock(blockHeight, circulatingSupply) {
+function getBaseRewardForBlock(blockHeight, circulatingSupply, ignoreBlockTimeUpdate) {
     let reward = (maxSupply - circulatingSupply) * Math.pow(2, -20)
-    if(blockHeight > hydrogenHelixActivationHeight) { // Double block reward after block time update
+    if(blockHeight > hydrogenHelixActivationHeight && !ignoreBlockTimeUpdate) { // Double block reward after block time update
         reward *= 2
     }
     return reward > tailEmission ? reward : tailEmission; // Use tail emission if base reward is smaller than 0.6 XMR
@@ -13,7 +13,7 @@ function getBaseRewardForBlock(blockHeight, circulatingSupply) {
 // You can start from known block height with corresponding total supply for efficiency reasons
 function getCirculatingSupplyOfBlock(blockHeight, startHeight, startSupply) {
     for (let bh = startHeight; bh <= blockHeight; bh++) {
-        let blockReward = getBaseRewardForBlock(bh, startSupply);
+        let blockReward = getBaseRewardForBlock(bh, startSupply, false);
         startSupply += blockReward;
     }
     return startSupply;
@@ -31,22 +31,69 @@ function getExpectedDateOfBlock(blockHeight) {
     }
 }
 
-function getTotalSupplyDataPoints(maxBlockHeight, step) {
-    let dataPoints = [];
+function getDataPoints(maxBlockHeight, step) {
+    let totalSupplyDataPoints = [];
+    let blockRewardDataPoints = [];
 
     let lastSupply = 0;
     let lastBlockHeight = 0;
     for (let blockHeight = 0; blockHeight < maxBlockHeight; blockHeight += step) {
         let supplyOfBlock = getCirculatingSupplyOfBlock(blockHeight, lastBlockHeight, lastSupply)
-        const expectedMinedDate = getExpectedDateOfBlock(blockHeight)
+        let baseRewardOfBlock = getBaseRewardForBlock(blockHeight, supplyOfBlock, false);
+        let baseRewardOfBlockWithoutUpdate = getBaseRewardForBlock(blockHeight, supplyOfBlock, true);
 
-        dataPoints.push({
+        const expectedMinedDate = getExpectedDateOfBlock(blockHeight);
+        const color = baseRewardOfBlock === tailEmission ? "Red" : "Blue";
+        const label = baseRewardOfBlock === tailEmission ? "The tail emission of " + tailEmission + " XMR per block has set in" : "Block height: " + blockHeight + " Date: " + expectedMinedDate.toDateString()
+
+        totalSupplyDataPoints.push({
             x: expectedMinedDate,
             y: supplyOfBlock,
-            label: "Block height: " + blockHeight + " Date: " + expectedMinedDate.toDateString()
+            label: label,
+            color: color,
+            lineColor: color,
+        });
+
+        blockRewardDataPoints.push({
+            x: expectedMinedDate,
+            y: baseRewardOfBlockWithoutUpdate,
+            label: label,
+            color: color,
+            lineColor: color,
         });
     }
-    return dataPoints;
+    return [totalSupplyDataPoints, blockRewardDataPoints];
+}
+
+function setupCharts() {
+    const dataPoints = getDataPoints(3500000, 50000);
+    let totalSupplyChart = new CanvasJS.Chart("chart-total-supply",
+        {
+            axisY:{
+                title:"Total XMR supply",
+            },
+            data: [
+                {
+                    type: "spline",
+                    dataPoints: dataPoints[0]
+                },
+            ]
+        });
+
+    let blockRewardChart = new CanvasJS.Chart("chart-block-reward",
+        {
+            axisY:{
+                title:"Miner reward per 2min",
+            },
+            data: [
+                {
+                    type: "spline",
+                    dataPoints: dataPoints[1]
+                },
+            ]
+        });
+    totalSupplyChart.render();
+    blockRewardChart.render();
 }
 
 function fetchTotalSupply() {
@@ -55,30 +102,13 @@ function fetchTotalSupply() {
         .then(data => {
             const totalSupplySpan = document.getElementById("current-total-supply");
             const totalSupply = data["total_emission"] * Math.pow(10, -12);
-            totalSupplySpan.innerText = totalSupply;
+            totalSupplySpan.innerText = totalSupply.toString();
         });
-}
-
-function calculateChart() {
-    const dataPoints = getTotalSupplyDataPoints(3500000, 75000);
-    let chart = new CanvasJS.Chart("chart",
-        {
-            title: {
-                text: "Monero total supply curve"
-            },
-            data: [
-                {
-                    type: "spline",
-                    dataPoints: dataPoints
-                },
-            ]
-        });
-    chart.render();
 }
 
 window.onload = () => {
     fetchTotalSupply();
-    calculateChart();
+    setupCharts();
 }
 
 

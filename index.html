@@ -5,7 +5,6 @@
     <title>Monero Supply Curve</title>
     <script type="text/javascript" src="canvasjs.min.js"></script>
     <script type="text/javascript" src="supply_calculator.js" defer></script>
-    <link rel="stylesheet" href="style.css">
 </head>
 <body>
 <header>
@@ -17,9 +16,13 @@
     Unlike Bitcoins block reward Moneros block rewards will never drop to zero. Instead they will gradually drop until tail emission commences at the end of May 2022. At this point, rewards will be fixed at 0.6 XMR per block.
     768 XMR will be created per day.
 </p>
-<div id="chart-outer">
-    <div id="chart" style="max-width: 900px; width: 95%;">
-</div>
-</div>
+<h2>
+    Total supply over time
+</h2>
+<div id="chart-total-supply" style="width: 800px; height: 800px"></div>
+<h2>
+    Block reward over time
+</h2>
+<div id="chart-block-reward" style="width: 800px; height: 800px"></div>
 </body>
 </html>

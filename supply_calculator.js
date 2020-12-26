@@ -31,6 +31,28 @@ function getExpectedDateOfBlock(blockHeight) {
     }
 }
 
+function getBitcoinBaseRewardForBlock(blockHeight) {
+    let reward = 50;
+    for(let i = 1; i < blockHeight / 210000; i++) {
+        reward *= 0.5;
+    }
+    return reward;
+}
+
+function getBitcoinCirculatingSupplyOfBlock(blockHeight) {
+    let supply = 0;
+    for(let i = 0; i < blockHeight && supply < 21000000; i++) {
+        supply += getBitcoinBaseRewardForBlock(i);
+    }
+    return supply;
+}
+
+const bitcoinDateOfFirstMinedBlock = new Date(2009, 1, 9, 3, 54, 0)
+function getBitcoinExpectedDateOfBlock(blockHeight) {
+    const expectedDate = new Date(bitcoinDateOfFirstMinedBlock.getTime() + 10 * blockHeight * 60000);
+    return expectedDate;
+}
+
 function getDataPoints(maxBlockHeight, step) {
     let totalSupplyDataPoints = [];
     let blockRewardDataPoints = [];
@@ -44,12 +66,12 @@ function getDataPoints(maxBlockHeight, step) {
 
         const expectedMinedDate = getExpectedDateOfBlock(blockHeight);
         const color = baseRewardOfBlock === tailEmission ? "Red" : "Blue";
-        const label = baseRewardOfBlock === tailEmission ? "The tail emission of " + tailEmission + " XMR per block has set in" : "Block height: " + blockHeight + " Date: " + expectedMinedDate.toDateString()
+        let label = baseRewardOfBlock === tailEmission ? "Tail emission has started" : " Date: " + expectedMinedDate.toDateString()
 
         totalSupplyDataPoints.push({
             x: expectedMinedDate,
             y: supplyOfBlock,
-            label: label,
+            label: label + " Block height: " + blockHeight,
             color: color,
             lineColor: color,
         });
@@ -65,10 +87,43 @@ function getDataPoints(maxBlockHeight, step) {
     return [totalSupplyDataPoints, blockRewardDataPoints];
 }
 
+function getBitcoinDataPoints(startBlock, maxBlockHeight, step) {
+    let totalSupplyDataPoints = [];
+    let blockRewardDataPoints = [];
+
+    for (let blockHeight = startBlock; blockHeight < maxBlockHeight; blockHeight += step) {
+        const baseRewardOfBlockPer2Min = getBitcoinBaseRewardForBlock(blockHeight) / 5;
+        const expectedMinedDate = getBitcoinExpectedDateOfBlock(blockHeight);
+        const supplyOfBlock = getBitcoinCirculatingSupplyOfBlock(blockHeight);
+
+        totalSupplyDataPoints.push({
+            x: expectedMinedDate,
+            y: supplyOfBlock,
+            label: "Bitcoin",
+            color: "orange",
+            lineColor: "orange",
+        });
+
+        blockRewardDataPoints.push({
+            x: expectedMinedDate,
+            y: baseRewardOfBlockPer2Min,
+            label: "Bitcoin",
+            color: "orange",
+            lineColor: "orange",
+        });
+    }
+
+    return [totalSupplyDataPoints, blockRewardDataPoints]
+}
+
 function setupCharts() {
     const dataPoints = getDataPoints(3500000, 50000);
+    const bitcoinDataPoints = getBitcoinDataPoints(275000, 950000, 25000)
+
     let totalSupplyChart = new CanvasJS.Chart("chart-total-supply",
         {
+            theme: "dark2",
+            responsive: true,
             axisY:{
                 title:"Total XMR supply",
             },
@@ -77,11 +132,17 @@ function setupCharts() {
                     type: "spline",
                     dataPoints: dataPoints[0]
                 },
+                {
+                    type: "line",
+                    dataPoints: bitcoinDataPoints[0]
+                }
             ]
         });
 
     let blockRewardChart = new CanvasJS.Chart("chart-block-reward",
         {
+            theme: "dark2",
+            responsive: true,
             axisY:{
                 title:"Miner reward per 2min",
             },
@@ -89,6 +150,10 @@ function setupCharts() {
                 {
                     type: "spline",
                     dataPoints: dataPoints[1]
+                },
+                {
+                    type: "line",
+                    dataPoints: bitcoinDataPoints[1]
                 },
             ]
         });
@@ -106,9 +171,7 @@ function fetchTotalSupply() {
         });
 }
 
-window.onload = () => {
+onload = () => {
     fetchTotalSupply();
     setupCharts();
 }
-
-

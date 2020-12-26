@@ -7,22 +7,35 @@
     <script type="text/javascript" src="supply_calculator.js" defer></script>
 </head>
 <body>
+<style>
+    body {
+
+    }
+</style>
 <header>
     <h1>Monero supply</h1>
 </header>
 <p>
-    As of today <span id="current-total-supply"> ... </span> XMR have been generated. All of them were given to miners to incentive them to keep the network safe.
+    As of today <span id="current-total-supply"> ... </span> XMR have been generated. All of them were given to miners to incentive them to keep supporting the network.
     <br>
-    Unlike Bitcoins block reward Moneros block rewards will never drop to zero. Instead they will gradually drop until tail emission commences at the end of May 2022. At this point, rewards will be fixed at 0.6 XMR per block.
-    768 XMR will be created per day.
+    Unlike Bitcoins block rewards Moneros block rewards will never drop to zero. Instead they will gradually decrease until tail emission commences at the end of May 2022. At this point, rewards will be fixed at 0.6 XMR per block.
+    Approximately 768 XMR will be created per day.
+    <br>
+    Miners need an incentive to mine. Because of the dynamic blocksize, competition between miners will cause fees to decrease. If mining is not profitable due to a high cost and low reward, miners lose their incentive and will stop mining, reducing the security of the network.
+
+    Tail emission ensures that a dynamic block size and fee market can develop.
 </p>
 <h2>
     Total supply over time
 </h2>
-<div id="chart-total-supply" style="width: 800px; height: 800px"></div>
+<div class="chart-container" style="position: relative; height:50vh; width:90vw; margin-bottom: 5vw; margin-left: 5vw; margin-right: 5vw">
+    <div id="chart-total-supply"></div>
+</div>
 <h2>
     Block reward over time
 </h2>
-<div id="chart-block-reward" style="width: 800px; height: 800px"></div>
+<div class="chart-container" style="position: relative; height:50vh; width:90vw; margin-bottom: 5vw; margin-left: 5vw; margin-right: 5vw">
+    <div id="chart-block-reward"></div>
+</div>
 </body>
 </html>

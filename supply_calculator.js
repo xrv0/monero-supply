@@ -129,7 +129,7 @@ function setupCharts() {
 
     let totalSupplyChart = new CanvasJS.Chart("chart-total-supply",
         {
-            theme: "dark2",
+            theme: "light",
             responsive: true,
             axisY:{
                 title:"Total XMR supply",
@@ -148,7 +148,7 @@ function setupCharts() {
 
     let blockRewardChart = new CanvasJS.Chart("chart-block-reward",
         {
-            theme: "dark2",
+            theme: "light",
             responsive: true,
             axisY:{
                 title:"Miner reward per 2min",

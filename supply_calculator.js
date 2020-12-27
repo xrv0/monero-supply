@@ -112,8 +112,8 @@ function getBitcoinDataPoints(startBlock, maxBlockHeight, step) {
 }
 
 function setupCharts() {
-    const dataPoints = getDataPoints(3500000, 50000);
-    const bitcoinDataPoints = getBitcoinDataPoints(275000, 950000, 100000)
+    const dataPoints = getDataPoints(3500000 * 1.72, 50000);
+    const bitcoinDataPoints = getBitcoinDataPoints(275000, 950000 * 1.5, 100000)
 
     let totalSupplyChart = new CanvasJS.Chart("chart-total-supply",
         {

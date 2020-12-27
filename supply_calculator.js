@@ -65,7 +65,6 @@ function getDataPoints(maxBlockHeight, step) {
         let baseRewardOfBlockWithoutUpdate = getBaseRewardForBlock(blockHeight, supplyOfBlock, true);
 
         const expectedMinedDate = getExpectedDateOfBlock(blockHeight);
-        const color = baseRewardOfBlock === tailEmission ? "Red" : "Blue";
         let label = baseRewardOfBlock === tailEmission ? "Tail emission has started" : " Date: " + expectedMinedDate.toDateString()
 
         totalSupplyDataPoints.push({

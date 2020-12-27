@@ -33,7 +33,7 @@ function getExpectedDateOfBlock(blockHeight) {
 
 function getBitcoinBaseRewardForBlock(blockHeight) {
     let reward = 50;
-    for(let i = 1; i < blockHeight / 210000; i++) {
+    for(let i = 1; i <= blockHeight / 210000; i++) {
         reward *= 0.5;
     }
     return reward;

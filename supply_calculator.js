@@ -39,12 +39,11 @@ function getBitcoinBaseRewardForBlock(blockHeight) {
     return reward;
 }
 
-function getBitcoinCirculatingSupplyOfBlock(blockHeight) {
-    let supply = 0;
-    for(let i = 0; i < blockHeight && supply < 21000000; i++) {
-        supply += getBitcoinBaseRewardForBlock(i);
+function getBitcoinCirculatingSupplyOfBlock(blockHeight, startHeight, startSupply) {
+    for(let i = startHeight; i < blockHeight && startSupply < 21000000; i++) {
+        startSupply += getBitcoinBaseRewardForBlock(i);
     }
-    return supply;
+    return startSupply;
 }
 
 const bitcoinDateOfFirstMinedBlock = new Date(2009, 1, 9, 3, 54, 0)
@@ -60,7 +59,11 @@ function getDataPoints(maxBlockHeight, step) {
     let lastSupply = 0;
     let lastBlockHeight = 0;
     for (let blockHeight = 0; blockHeight < maxBlockHeight; blockHeight += step) {
-        let supplyOfBlock = getCirculatingSupplyOfBlock(blockHeight, lastBlockHeight, lastSupply)
+        var t0 = performance.now()
+        let supplyOfBlock = getCirculatingSupplyOfBlock(blockHeight, lastBlockHeight, lastSupply);
+        var t1 = performance.now()
+        console.log("Monero supply calc took " + (t1 - t0) + " milliseconds.")
+
         let baseRewardOfBlock = getBaseRewardForBlock(blockHeight, supplyOfBlock, false);
         let baseRewardOfBlockWithoutUpdate = getBaseRewardForBlock(blockHeight, supplyOfBlock, true);
 
@@ -86,10 +89,15 @@ function getBitcoinDataPoints(startBlock, maxBlockHeight, step) {
     let totalSupplyDataPoints = [];
     let blockRewardDataPoints = [];
 
+    let lastBlockHeight = 0;
+    let lastSupply = 0;
     for (let blockHeight = startBlock; blockHeight < maxBlockHeight; blockHeight += step) {
         const baseRewardOfBlockPer2Min = getBitcoinBaseRewardForBlock(blockHeight) / 5;
         const expectedMinedDate = getBitcoinExpectedDateOfBlock(blockHeight);
-        const supplyOfBlock = getBitcoinCirculatingSupplyOfBlock(blockHeight);
+        const supplyOfBlock = getBitcoinCirculatingSupplyOfBlock(blockHeight, lastBlockHeight, lastSupply);
+
+        lastBlockHeight = blockHeight;
+        lastSupply = supplyOfBlock;
 
         totalSupplyDataPoints.push({
             x: expectedMinedDate,
@@ -112,8 +120,12 @@ function getBitcoinDataPoints(startBlock, maxBlockHeight, step) {
 }
 
 function setupCharts() {
-    const dataPoints = getDataPoints(3500000 * 1.72, 50000);
-    const bitcoinDataPoints = getBitcoinDataPoints(275000, 950000 * 1.5, 100000)
+    let start = performance.now()
+    const dataPoints = getDataPoints(12040000, 500000);
+    let finish = performance.now()
+    console.log("Monero calculation took some " + (finish - start) + " milliseconds.");
+
+    const bitcoinDataPoints = getBitcoinDataPoints(0, 2660000, 210000)
 
     let totalSupplyChart = new CanvasJS.Chart("chart-total-supply",
         {

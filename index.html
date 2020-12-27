@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Monero Supply Curve</title>
+    <title>Monero Supply Explained</title>
     <script type="text/javascript" src="canvasjs.min.js"></script>
     <script type="text/javascript" src="supply_calculator.js" defer></script>
 
@@ -10,6 +10,12 @@
 </head>
 <body>
 <style>
+    @media only screen and (max-width: 48rem) {
+        body {
+            font-size: 1rem;
+        }
+    }
+
     body {
         font-family: "Helvetica Neue", Arial, sans-serif;
 		max-width: 100%;
@@ -38,12 +44,13 @@
 <p>
     As of today <span id="current-total-supply"> ... </span> XMR have been generated. All of them were given to miners to incentive them to keep supporting the network.
     <br>
-    Unlike Bitcoins block rewards Moneros block rewards will never drop to zero. Instead they will gradually decrease until tail emission commences at the end of May 2022. At this point, rewards will be fixed at 0.6 XMR per block.
+    Unlike Bitcoins block rewards Moneros block rewards will never drop to zero. Instead, they will gradually decrease until tail emission commences at the end of May 2022. At this point, rewards will be fixed at 0.6 XMR per block.
     Approximately 768 XMR will be created per day.
     <br>
     Miners need an incentive to mine. Because of the dynamic blocksize, competition between miners will cause fees to decrease. If mining is not profitable due to a high cost and low reward, miners lose their incentive and will stop mining, reducing the security of the network.
-
     Tail emission ensures that a dynamic block size and fee market can develop.
+    <br>
+    Even though it might seem like this policy limits the price per XMR it won't matter until the year 2040 when the supply of Monero surpasses the hard limit of 21000000 Bitcoins.
 </p>
 <h2>
     Total supply over time
@@ -57,6 +64,17 @@
 <div class="chart-container">
     <div id="chart-block-reward" class="chart"></div>
 </div>
+<h2>
+    Hidden inflation and supply auditability
+</h2>
+<p>
+    In theory, the supply of Monero is auditable by adding up all coinsbase block rewards of each block. This can be done using the "print_coinbase_tx_sum" command.
+    <br>
+    But there have been concerns about possible inflation bugs in the Monero codebase or the underlying math principles which could be exploited to generate coins out of thin air. In may 2017 the Monero Research Lab discovered and patched a critical bug that affected Monero and would have allowed an exploiter to create an unlimited number of coins in a way that is undetectable to an observer unless they know about the fatal flaw and can search for it.
+    <br>
+    This particular bug however was confirmed to have never been used before on the Monero blockchain.
+    Read more about supply auditability <a href="https://web.getmonero.org/2020/01/17/auditability.html">here</a>
+</p>
 <h2>
     About
 </h2>

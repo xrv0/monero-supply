@@ -174,7 +174,11 @@ function fetchTotalSupply() {
         .then(data => {
             const totalSupplySpan = document.getElementById("current-total-supply");
             const totalSupply = data["total_emission"] * Math.pow(10, -12);
-            totalSupplySpan.innerText = totalSupply.toString();
+            const blockHeight = data["height"];
+            totalSupplySpan.innerText = totalSupply.toLocaleString("en", {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            }) + " (as of block " + blockHeight + ")";
         });
 }
 
